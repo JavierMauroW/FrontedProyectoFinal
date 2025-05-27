@@ -1,5 +1,7 @@
 package com.example.proyectofinal.ViewModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectofinal.Repository.ResumenProgresoRepository
@@ -18,7 +20,8 @@ class ResumenProgresoViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    /** Carga todos los resúmenes de progreso */
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun loadResúmenes() {
         viewModelScope.launch {
             try {
@@ -31,6 +34,7 @@ class ResumenProgresoViewModel(
     }
 
     /** Agrega un nuevo resumen y recarga */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addResumen(resumen: ResumenProgreso) {
         viewModelScope.launch {
             try {
@@ -42,7 +46,8 @@ class ResumenProgresoViewModel(
         }
     }
 
-    /** Edita un resumen y recarga */
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun editResumen(id: Int, resumen: ResumenProgreso) {
         viewModelScope.launch {
             try {
@@ -54,7 +59,8 @@ class ResumenProgresoViewModel(
         }
     }
 
-    /** Elimina un resumen y recarga */
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun removeResumen(id: Int) {
         viewModelScope.launch {
             try {

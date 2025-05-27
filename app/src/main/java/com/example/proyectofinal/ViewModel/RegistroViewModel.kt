@@ -13,15 +13,15 @@ class RegistroViewModel(
     private val repo: UsuarioRepository = UsuarioRepository()
 ) : ViewModel() {
 
-    // Estado de error o éxito (mensaje)
+
     private val _mensaje = MutableStateFlow<String?>(null)
     val mensaje: StateFlow<String?> = _mensaje
 
-    // El usuario recién creado (null hasta que se registre)
+
     private val _usuarioCreado = MutableStateFlow<Usuario?>(null)
     val usuarioCreado: StateFlow<Usuario?> = _usuarioCreado
 
-    /** Llama al backend para crear un nuevo Usuario */
+
     fun registrarUsuario(correo: String, contrasena: String) {
         viewModelScope.launch {
             try {
@@ -40,7 +40,7 @@ class RegistroViewModel(
         }
     }
 
-    /** Limpia el estado una vez usado en la UI */
+
     fun limpiar() {
         _mensaje.value = null
         _usuarioCreado.value = null

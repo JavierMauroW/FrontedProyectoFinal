@@ -48,11 +48,13 @@ interface ApiService {
     @POST("/notasrapidas")
     suspend fun createNota(@Body nota: NotaRapida): NotaRapida
 
-    @PUT("/notasrapidas/{id}")
-    suspend fun updateNota(
-        @Path("id") id: NotaRapida,
-        @Body nota: NotaRapida
-    ): NotaRapida
+
+        @PUT("/notasrapidas/{id}")
+        suspend fun updateNota(
+            @Path("id") id: Int,  // Cambiado de NotaRapida a Int
+            @Body nota: NotaRapida
+        ): NotaRapida
+
 
     @DELETE("/notasrapidas/{id}")
     suspend fun deleteNota(@Path("id") id: Int): Response<Unit>
@@ -72,6 +74,11 @@ interface ApiService {
 
     @DELETE("/objetivos/{id}")
     suspend fun deleteObjetivo(@Path("id") id: Int): Response<Unit>
+
+    // NUEVO: Marcar objetivo como completado
+    @PUT("objetivos/{id}/completar")
+    suspend fun marcarObjetivoComoCompletado(@Path("id") id: Int): Objetivo
+
 
     // --- ProgresoObjetivo ---
     @GET("/progresos")

@@ -54,6 +54,9 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
     implementation ("androidx.compose.material:material-icons-core:1.4.0")
     implementation ("androidx.compose.material:material-icons-extended:1.4.0")
+    implementation ("androidx.compose.material:material:1.5.0")
+
+    implementation ("androidx.compose.foundation:foundation")
 
 
 

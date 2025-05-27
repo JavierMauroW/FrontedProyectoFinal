@@ -1,8 +1,12 @@
 package com.example.appproyecto.apps
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -10,112 +14,256 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
+private val fondoGradiente = Brush.verticalGradient(
+    colors = listOf(Color(0xFF181818), Color(0xFF22183c), Color(0xFF1a1033))
+)
+private val cardColor = Color(0xFF232232)
+private val cardShadow = Color(0x45000000)
+private val primaryColor = Color(0xFFB26DFF)
+private val accentColor = Color(0xFF85E3FF)
+private val secondaryColor = Color.White
+private val dividerColor = Color(0x33FFFFFF)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuPantalla(navController: NavController, idUsuario: Int) {
-    // Colores estilo cuaderno
-    val fondoColor = Color(0xFFFDF6E3) // Color de fondo
-    val lineaColor = Color(0xFFB3CDE0) // Color de línea
-    val primaryColor = Color(0xFFB26D00) // Color primario
-    val secondaryColor = Color(0xFF8C5600) // Color secundario
-
-    Box(
+    Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(fondoColor)
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
+            .background(fondoGradiente),
+        color = Color.Transparent
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(fondoGradiente),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Bienvenido",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = primaryColor,
-                textAlign = TextAlign.Center
-            )
+
+            HeaderMenu()
+
+            Spacer(Modifier.height(24.dp))
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
+                MenuCard(
+                    title = "Anotaciones",
+                    subtitle = "Tus notas personales",
+                    icon = Icons.Default.FolderOpen,
+                    accent = primaryColor,
+                    onClick = { navController.navigate("anotaciones_personal/$idUsuario") }
+                )
+                Spacer(Modifier.height(16.dp))
+                MenuCard(
+                    title = "Notas rápidas",
+                    subtitle = "Ideas y recordatorios",
+                    icon = Icons.Default.Edit,
+                    accent = accentColor,
+                    onClick = { navController.navigate("notas_rapidas/$idUsuario") }
+                )
+                Spacer(Modifier.height(16.dp))
+                MenuCard(
+                    title = "Objetivos",
+                    subtitle = "Metas y hábitos",
+                    icon = Icons.Default.CheckCircle,
+                    accent = Color(0xFF4CAF50),
+                    onClick = { navController.navigate("objetivos/$idUsuario") }
+                )
+                Spacer(Modifier.height(16.dp))
+                MenuCard(
+                    title = "Progreso",
+                    subtitle = "Estadísticas y logros",
+                    icon = Icons.Default.TrendingUp,
+                    accent = Color(0xFFEFCB68),
+                    onClick = { navController.navigate("progreso_objetivos/$idUsuario") }
+                )
+                Spacer(Modifier.height(16.dp))
+                MenuCard(
+                    title = "Resumen",
+                    subtitle = "Tu avance en un vistazo",
+                    icon = Icons.Default.Assessment,
+                    accent = Color(0xFFFF5E7E),
+                    onClick = { navController.navigate("resumen_progreso/$idUsuario") }
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Divider(
-                color = lineaColor,
-                thickness = 2.dp,
+                color = dividerColor,
+                thickness = 1.dp,
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth(0.6f)
+                    .padding(horizontal = 32.dp, vertical = 10.dp)
             )
 
-            // Botones de menú con animaciones e iconos
-            BotonMenu(texto = "Anotaciones", icono = Icons.Default.Note, colorFondo = primaryColor) {
-                navController.navigate("anotaciones_personal/$idUsuario")
-            }
-            BotonMenu(texto = "Notas rápidas", icono = Icons.Default.Edit, colorFondo = primaryColor) {
-                navController.navigate("notas_rapidas/$idUsuario")
-            }
-            BotonMenu(texto = "Objetivos", icono = Icons.Default.CheckCircle, colorFondo = primaryColor) {
-                navController.navigate("objetivos/$idUsuario")
-            }
-            BotonMenu(texto = "Progreso de objetivos", icono = Icons.Default.TrendingUp, colorFondo = primaryColor) {
-                navController.navigate("progreso_objetivos/$idUsuario")
-            }
-            BotonMenu(texto = "Resumen del día", icono = Icons.Default.Assessment, colorFondo = primaryColor) {
-                navController.navigate("resumen_progreso/$idUsuario")
+
+            Button(
+                onClick = { navController.navigate("login") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = primaryColor
+                ),
+                border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.5.dp, brush = Brush.horizontalGradient(listOf(primaryColor, accentColor)))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ExitToApp,
+                    contentDescription = "Cerrar Sesión",
+                    tint = primaryColor
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    "Cerrar Sesión",
+                    color = primaryColor,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Botón de cerrar sesión
-            BotonMenu(texto = "Cerrar Sesión", icono = Icons.Default.ExitToApp, colorFondo = secondaryColor) {
-                navController.navigate("login") // Navegar a la pantalla de login
-            }
+            Spacer(Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun BotonMenu(
-    texto: String,
-    icono: androidx.compose.ui.graphics.vector.ImageVector,
-    colorFondo: Color,
-    onClick: () -> Unit
-) {
-    // Animación de escala
-    var scale by remember { mutableStateOf(1f) }
-    val infiniteTransition = rememberInfiniteTransition()
-    val animatedScale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 500, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    Button(
-        onClick = onClick,
+fun HeaderMenu() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxWidth(0.85f)
-            .height(50.dp)
-            .scale(animatedScale), // Aplicar la animación de escala
-        colors = ButtonDefaults.buttonColors(containerColor = colorFondo),
-        shape = RoundedCornerShape(16.dp),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+            .fillMaxWidth()
+            .padding(top = 40.dp, bottom = 8.dp)
     ) {
-        Icon(icono, contentDescription = null, tint = Color.White)
-        Spacer(modifier = Modifier.width(8.dp))
+
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(CircleShape)
+                .background(primaryColor.copy(alpha = 0.15f))
+                .border(width = 2.dp, color = primaryColor, shape = CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.AccountCircle,
+                contentDescription = "Avatar",
+                tint = primaryColor,
+                modifier = Modifier.size(56.dp)
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+
         Text(
-            text = texto,
-            color = Color.White,
-            fontSize = 16.sp,
+            "MindNotes",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = secondaryColor,
+            letterSpacing = 1.5.sp
+        )
+        Text(
+            "Tu espacio de productividad",
+            fontSize = 15.sp,
+            color = secondaryColor.copy(alpha = 0.6f),
             fontWeight = FontWeight.Medium
         )
+    }
+}
+
+@Composable
+fun MenuCard(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    accent: Color,
+    onClick: () -> Unit
+) {
+    var pressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(if (pressed) 0.98f else 1f, label = "")
+    val elevation by animateFloatAsState(if (pressed) 2f else 8f, label = "")
+    val bgColor by animateColorAsState(if (pressed) cardColor.copy(alpha = 0.95f) else cardColor, label = "")
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .blur(if (pressed) 0.5.dp else 0.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        pressed = true
+                        try {
+                            awaitRelease()
+                        } finally {
+                            pressed = false
+                        }
+                    },
+                    onTap = { onClick() }
+                )
+            },
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = bgColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 18.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(accent.copy(alpha = 0.18f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, contentDescription = title, tint = accent, modifier = Modifier.size(28.dp))
+            }
+            Spacer(Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    title,
+                    color = secondaryColor,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+                Text(
+                    subtitle,
+                    color = secondaryColor.copy(alpha = 0.65f),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Normal,
+                    maxLines = 1
+                )
+            }
+            Icon(
+                Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = accent.copy(alpha = 0.8f),
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }

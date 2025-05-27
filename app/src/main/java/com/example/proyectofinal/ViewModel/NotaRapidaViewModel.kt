@@ -20,7 +20,7 @@ class NotaRapidaViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    /** Carga todas las notas rápidas */
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun loadNotas() {
         viewModelScope.launch {
@@ -33,7 +33,7 @@ class NotaRapidaViewModel(
         }
     }
 
-    /** Agrega una nueva nota rápida y recarga */
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun addNota(nota: NotaRapida) {
         viewModelScope.launch {
@@ -46,20 +46,23 @@ class NotaRapidaViewModel(
         }
     }
 
-    /** Edita una nota rápida y recarga */
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun editNota(id: NotaRapida, nota: NotaRapida) {
+    fun editNota(notaOriginal: NotaRapida, notaNueva: NotaRapida) {
         viewModelScope.launch {
             try {
-                repository.updateNota(id, nota)
+
+                val notaActualizada = notaNueva.copy(idNota = notaOriginal.idNota)
+                repository.updateNota(notaOriginal, notaActualizada)
                 loadNotas()
+                _error.value = null
             } catch (e: Exception) {
                 _error.value = "Error actualizando nota: ${e.localizedMessage}"
             }
         }
     }
 
-    /** Elimina una nota rápida y recarga */
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun removeNota(id: Int) {
         viewModelScope.launch {

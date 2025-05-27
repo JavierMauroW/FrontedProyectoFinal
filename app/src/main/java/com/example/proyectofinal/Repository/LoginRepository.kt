@@ -3,19 +3,20 @@ package com.example.proyectofinal.Repository
 
 
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.proyectofinal.interfaces.RetrofitClient
 import com.example.proyectofinal.model.Usuario
 
 class LoginRepository {
+    @RequiresApi(Build.VERSION_CODES.O)
     private val api = RetrofitClient.apiService
 
-    /**
-     * Llama al endpoint POST /api/login enviando un Usuario con correo y contraseña.
-     * Devuelve el Usuario completo (o lanza excepción si falla).
-     */
+
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun login(correo: String, contrasena: String): Usuario =
         api.login(Usuario(
-            idUsuario = 0,    // sólo importa correo y contraseña
+            idUsuario = 0,
             nombre    = "",
             correo    = correo,
             contrasena= contrasena

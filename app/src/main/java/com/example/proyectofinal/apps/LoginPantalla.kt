@@ -1,18 +1,27 @@
 package com.example.proyectofinal.apps
 
 import android.widget.Toast
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +31,19 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectofinal.ViewModel.LoginViewModel
+import androidx.compose.ui.input.pointer.pointerInput
 
+// --- Paleta de colores consistente con el menú ---
+private val fondoGradiente = Brush.verticalGradient(
+    colors = listOf(Color(0xFF181818), Color(0xFF22183c), Color(0xFF1a1033))
+)
+private val cardColor = Color(0xFF232232)
+private val primaryColor = Color(0xFFB26DFF)
+private val accentColor = Color(0xFF85E3FF)
+private val secondaryColor = Color.White
+private val borderColor = Color(0xFF353535)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPantalla(
     navController: NavController,
@@ -34,7 +55,6 @@ fun LoginPantalla(
     val user by viewModel.user.collectAsState()
     val context = LocalContext.current
 
-    // Navega al menú si login fue exitoso
     LaunchedEffect(user) {
         user?.let { u ->
             navController.navigate("menu/${u.idUsuario}") {
@@ -43,125 +63,152 @@ fun LoginPantalla(
         }
     }
 
-    // Colores estilo “diario/cuaderno”
-    val fondoColor = Color(0xFFFDF6E3)       // color papel
-    val lineColor = Color(0xFFB3CDE0)        // líneas horizontales
-    val marginColor = Color(0xFFDD6E2C)      // margen vertical
-    val primaryColor = Color(0xFFB26D00)     // botones, foco
-    val secondaryColor = Color(0xFF8C5600)   // textos
-
-    // Espaciado entre líneas de cuaderno
-    val lineSpacing = 32.dp
-
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(fondoColor)
-            .drawBehind {
-                // Dibujar líneas horizontales a modo de cuaderno:
-                val spacingPx = lineSpacing.toPx()
-                var y = spacingPx
-                while (y < size.height) {
-                    drawLine(
-                        color = lineColor,
-                        start = androidx.compose.ui.geometry.Offset(0f, y),
-                        end = androidx.compose.ui.geometry.Offset(size.width, y),
-                        strokeWidth = 1.dp.toPx(),
-                        cap = StrokeCap.Square
-                    )
-                    y += spacingPx
-                }
-                // Dibujar margen vertical:
-                val marginX = 48.dp.toPx()
-                drawLine(
-                    color = marginColor,
-                    start = androidx.compose.ui.geometry.Offset(marginX, 0f),
-                    end = androidx.compose.ui.geometry.Offset(marginX, size.height),
-                    strokeWidth = 2.dp.toPx()
-                )
-            },
-        color = fondoColor
+            .background(fondoGradiente),
+        color = Color.Transparent
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .background(fondoGradiente)
         ) {
-            Text(
-                "MindNotes",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = primaryColor
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 60.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(primaryColor.copy(alpha = 0.17f))
+                        .border(width = 2.dp, color = primaryColor, shape = CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "Login",
+                        tint = primaryColor,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "MindNotes",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = secondaryColor,
+                    letterSpacing = 1.2.sp
+                )
+                Text(
+                    "Tu espacio de productividad",
+                    fontSize = 15.sp,
+                    color = secondaryColor.copy(alpha = 0.55f),
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
 
             Card(
                 modifier = Modifier
+                    .align(Alignment.Center)
                     .fillMaxWidth()
-                    .shadow(8.dp, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
+                    .padding(horizontal = 32.dp)
+                    .blur(0.5.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = cardColor)
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(24.dp),
+                        .padding(vertical = 32.dp, horizontal = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Iniciar Sesión",
-                        fontSize = 24.sp,
+                        "Inicia sesión",
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = secondaryColor
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(22.dp))
 
                     OutlinedTextField(
                         value = correo,
                         onValueChange = { correo = it },
                         label = { Text("Correo electrónico") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 8.dp),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.MailOutline,
+                                contentDescription = null,
+                                tint = primaryColor
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
+                        shape = RoundedCornerShape(10.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            containerColor = cardColor,
                             focusedBorderColor = primaryColor,
-                            unfocusedBorderColor = lineColor,
-                            cursorColor = primaryColor
-                        )
+                            unfocusedBorderColor = borderColor,
+                            cursorColor = primaryColor,
+                            focusedLabelColor = primaryColor,
+                            unfocusedLabelColor = Color(0xFFAAAAAA)
+                        ),
+                        textStyle = TextStyle(color = secondaryColor)
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text("Contraseña") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = primaryColor
+                            )
+                        },
                         visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        colors = OutlinedTextFieldDefaults.colors(
+                        shape = RoundedCornerShape(10.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            containerColor = cardColor,
                             focusedBorderColor = primaryColor,
-                            unfocusedBorderColor = lineColor,
-                            cursorColor = primaryColor
-                        )
+                            unfocusedBorderColor = borderColor,
+                            cursorColor = primaryColor,
+                            focusedLabelColor = primaryColor,
+                            unfocusedLabelColor = Color(0xFFAAAAAA)
+                        ),
+                        textStyle = TextStyle(color = secondaryColor)
                     )
+
 
                     error?.let {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             it,
-                            color = Color.Red,
-                            style = TextStyle(fontSize = 14.sp)
+                            color = Color(0xFFFF5E7E),
+                            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium)
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
+
+
+                    var pressed by remember { mutableStateOf(false) }
+                    val scale by animateFloatAsState(if (pressed) 0.98f else 1f, label = "")
+                    val btnBgColor by animateColorAsState(
+                        if (pressed) primaryColor.copy(alpha = 0.85f) else primaryColor,
+                        label = ""
+                    )
 
                     Button(
                         onClick = {
@@ -175,23 +222,36 @@ fun LoginPantalla(
                                 viewModel.login(correo, password)
                             }
                         },
-
-
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
+                            .height(50.dp)
+                            .graphicsLayer { scaleX = scale; scaleY = scale }
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onPress = {
+                                        pressed = true
+                                        try {
+                                            awaitRelease()
+                                        } finally {
+                                            pressed = false
+                                        }
+                                    }
+                                )
+                            },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = btnBgColor)
                     ) {
-                        Text("Entrar", fontSize = 16.sp, color = Color.White)
+                        Text("Entrar", fontSize = 16.sp, color = secondaryColor, fontWeight = FontWeight.Bold)
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     TextButton(onClick = { navController.navigate("registro") }) {
-                        Text("¿No tienes cuenta? Regístrate",
-                            color = secondaryColor,
-                            fontSize = 14.sp
+                        Text(
+                            "¿No tienes cuenta? Regístrate",
+                            color = primaryColor,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }

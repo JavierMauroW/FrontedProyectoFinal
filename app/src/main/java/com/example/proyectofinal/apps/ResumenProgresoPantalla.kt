@@ -17,7 +17,7 @@ fun ResumenProgresoPantalla(
     navController: NavController,
     viewModel: ResumenProgresoViewModel = viewModel()
 ) {
-    // Cargar los resúmenes al inicio
+
     LaunchedEffect(Unit) {
         viewModel.loadResúmenes()
     }
@@ -38,7 +38,7 @@ fun ResumenProgresoPantalla(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Mostrar los datos de los resúmenes existentes
+
         if (resúmenes.isNotEmpty()) {
             resúmenes.forEach { resumen ->
                 Text(
@@ -60,7 +60,7 @@ fun ResumenProgresoPantalla(
             )
         }
 
-        // Mostrar error si lo hay
+
         error?.let { errorMessage ->
             Spacer(modifier = Modifier.height(12.dp))
             Text(text = errorMessage, color = MaterialTheme.colorScheme.error)

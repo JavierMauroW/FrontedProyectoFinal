@@ -25,7 +25,7 @@ fun Navigation() {
             arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
         ) { backStackEntry ->
             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: -1
-            MenuPantalla(navController, idUsuario)  // <-- pasamos el Int directamente
+            MenuPantalla(navController, idUsuario)
         }
 
         composable(
@@ -67,6 +67,28 @@ fun Navigation() {
             val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: -1
             val viewModel: ResumenProgresoViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
             ResumenProgresoPantalla(navController, viewModel)
+        }
+
+
+        composable(
+            route = "agregar_anotacion/{idUsuario}",
+            arguments = listOf(navArgument("idUsuario") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: -1
+            EditarAnotacionPantalla(navController, idUsuario, idAnotacion = null)
+        }
+
+
+        composable(
+            route = "agregar_anotacion/{idUsuario}/{idAnotacion}",
+            arguments = listOf(
+                navArgument("idUsuario") { type = NavType.IntType },
+                navArgument("idAnotacion") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val idUsuario = backStackEntry.arguments?.getInt("idUsuario") ?: -1
+            val idAnotacion = backStackEntry.arguments?.getInt("idAnotacion")
+            EditarAnotacionPantalla(navController, idUsuario, idAnotacion = idAnotacion)
         }
     }
 }

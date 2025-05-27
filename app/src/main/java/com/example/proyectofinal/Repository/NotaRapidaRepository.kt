@@ -1,9 +1,5 @@
 package com.example.proyectofinal.Repository
 
-
-
-
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.proyectofinal.interfaces.RetrofitClient
@@ -11,22 +7,22 @@ import com.example.proyectofinal.model.NotaRapida
 
 class NotaRapidaRepository {
     @RequiresApi(Build.VERSION_CODES.O)
-    private val api = RetrofitClient.apiService
+    private val apiService = RetrofitClient.apiService
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getAllNotas(): List<NotaRapida> =
-        api.getAllNotas()
+        apiService.getAllNotas()
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun createNota(nota: NotaRapida): NotaRapida =
-        api.createNota(nota)
+        apiService.createNota(nota)
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun updateNota(id: NotaRapida, nota: NotaRapida): NotaRapida =
-        api.updateNota(id, nota)
+    suspend fun updateNota(notaOriginal: NotaRapida, notaNueva: NotaRapida): NotaRapida =
+        apiService.updateNota(notaOriginal.idNota, notaNueva)
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun deleteNota(id: Int) {
-        api.deleteNota(id)
+        apiService.deleteNota(id)
     }
 }

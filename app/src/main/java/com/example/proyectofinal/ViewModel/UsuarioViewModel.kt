@@ -22,7 +22,7 @@ class UsuarioViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
-    /** Carga todos los usuarios */
+
     fun loadUsuarios() {
         viewModelScope.launch {
             try {
@@ -34,7 +34,7 @@ class UsuarioViewModel(
         }
     }
 
-    /** Agrega un nuevo usuario y recarga */
+
     fun addUsuario(usuario: Usuario) {
         viewModelScope.launch {
             try {
@@ -46,7 +46,7 @@ class UsuarioViewModel(
         }
     }
 
-    /** Edita un usuario y recarga */
+
     fun editUsuario(id: Int, usuario: Usuario) {
         viewModelScope.launch {
             try {
@@ -58,7 +58,7 @@ class UsuarioViewModel(
         }
     }
 
-    /** Elimina un usuario y recarga */
+
     fun removeUsuario(id: Int) {
         viewModelScope.launch {
             try {

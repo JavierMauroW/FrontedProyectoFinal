@@ -1,5 +1,7 @@
 package com.example.proyectofinal.ViewModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectofinal.Repository.LoginRepository
@@ -20,7 +22,8 @@ class LoginViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    /** Inicia sesión con correo y contraseña */
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun login(correo: String, contrasena: String) {
         viewModelScope.launch {
             try {
@@ -28,7 +31,7 @@ class LoginViewModel(
                 _user.value = u
                 _error.value = null
             } catch (e: HttpException) {
-                _user.value = null  // asegúrate de limpiar usuario previo
+                _user.value = null
                 _error.value = when (e.code()) {
                     401 -> "Contraseña incorrecta"
                     404 -> "Usuario no encontrado"
